@@ -27,16 +27,11 @@
     this['A'] = A;
     this['C'] = C;
     this['Q'] = Q;
-
-    this['I'] = Matrix.I(P0.rows());
-    this['T'] = Date.now();
   }
 
   KF.prototype = {
     'X': null,
     'P': null,
-    //
-    'I': null,
     //
     'A': null,
     'B': null,
@@ -46,22 +41,15 @@
     'W': null,
     'Q': null,
     //
-    'T': 0,
-    //
     'update': function(ob) {
 
-      var T = Date.now() - this['T'];
-
-      // x_k: Predicted State vector
+      // x_k: Predicted State vector / Estimated signal
       // X_k: State vector
       var Xk = this['X']; // Get prev state
 
       // p_k: Predicted Covariance Matrix
       // P_k: Covariance Matrix
       var Pk = this['P']; // Get prev cov
-
-      // Identity Matrix
-      var I = this['I'];
 
       // A: Format Matrix
       // B: Format Matrix
@@ -104,11 +92,11 @@
       var xk = A.mul(Xk);
 
       if (B && Uk) {
-        xk.add(B.mul(Uk));
+        xk = xk.add(B.mul(Uk));
       }
 
       if (Wk) {
-        xk.add(Wk);
+        xk = xk.add(Wk);
       }
 
       // Predicted process Covariance Matrix
@@ -116,7 +104,7 @@
       var pk = A.mul(Pk).mul(A.transpose());
 
       if (Qk) {
-        pk.add(Qk);
+        pk = pk.add(Qk);
       }
 
       // Kalman Gain, weight for measurement and model
@@ -132,7 +120,7 @@
       var yk = C.mul(Yk);
 
       if (Zk) {
-        yk.add(Zk);
+        yk = yk.add(Zk);
       }
 
       // Update state
@@ -140,12 +128,18 @@
       Xk = xk.add(K.mul(yk.sub(H.mul(xk))));
 
       // Update process Covariance Matrix
-      // P_k = (I - K * H) * p_k
-      Pk = I.sub(K.mul(H)).mul(pk);
+      // P_k = (I - K * H) * p_k   = OR =   p_k - K * H * p_k 
+      Pk = pk.sub(K.mul(H).mul(pk));
 
       // Set Current state
       this['X'] = Xk;
       this['P'] = Pk;
+    },
+    'setProcessNoise': function(noise) {
+      this['Q'] = noise;
+    },
+    'getState': function() {
+      return this['X'];
     }
   };
 
