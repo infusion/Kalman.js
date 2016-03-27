@@ -1,0 +1,26 @@
+{
+    "name": "kalman",
+    "main": "kalman.js",
+    "version": "0.0.1",
+    "homepage": "https://github.com/infusion/Kalman.js",
+    "description": "A kalman filter library",
+    "keywords": [
+        "kalman filter", "kalman", "filter"
+    ],
+    "authors": [
+        "Robert Eisele <robert@xarg.org> (http://www.xarg.org/)"
+    ],
+    "license": [
+        "MIT",
+        "GPL"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/infusion/Kalman.js.git"
+    },
+    "ignore": [
+        "tests",
+        ".travis.yml",
+        "package.json"
+    ]
+}

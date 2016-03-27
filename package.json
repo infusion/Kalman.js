@@ -1,0 +1,32 @@
+{
+    "name": "kalman",
+    "title": "Kalman.js",
+    "version": "0.0.1",
+    "homepage": "https://github.com/infusion/Kalman.js",
+    "bugs": "https://github.com/infusion/Kalman.js/issues",
+    "description": "A kalman filter library",
+    "keywords": ["kalman filter", "kalman", "filter"],
+    "author": "Robert Eisele <robert@xarg.org> (http://www.xarg.org/)",
+    "main": "kalman",
+    "readmeFilename": "README.md",
+    "directories": {
+        "example": "examples"
+    },
+    "license": "MIT OR GPL-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/infusion/Kalman.js.git"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "scripts": {
+        "test": "mocha tests/*.js"
+    },
+    "devDependencies": {
+        "mocha": "*"
+    },
+    "dependencies": {
+        "sylvester": "*"
+    }
+}
