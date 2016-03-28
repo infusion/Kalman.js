@@ -73,7 +73,7 @@
       // Y_k: Observed value
       var Yk = ob['Y'];
 
-      // Z_k: Measure noise
+      // Z_k: Measure noise, the noise we expect the measurement was generated on
       var Zk = ob['Z'];
 
       // K: Kalman Gain
