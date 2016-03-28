@@ -5,7 +5,7 @@
     "homepage": "https://github.com/infusion/Kalman.js",
     "description": "A kalman filter library",
     "keywords": [
-        "kalman filter", "kalman", "filter"
+        "kalman filter", "kalman", "filter", "noise"
     ],
     "authors": [
         "Robert Eisele <robert@xarg.org> (http://www.xarg.org/)"
