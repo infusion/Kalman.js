@@ -15,7 +15,7 @@ bower install kalman
 or
 
 ```
-npm install --save kalman
+npm install kalman
 ```
 
 Using Kalman.js with the browser
