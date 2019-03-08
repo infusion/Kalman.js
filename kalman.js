@@ -9,168 +9,144 @@
 
   "use strict";
 
-  var Syl = require('sylvester');
+/**
+ * @constructor
+ * @returns {KF}
+ */
+function KF(X0, P0) {
 
-  var Matrix = Syl.Matrix;
+  this['x'] = X0;
+  this['P'] = P0;
+}
 
-  Matrix.prototype.mul = Matrix.prototype.multiply;
-  Matrix.prototype.sub = Matrix.prototype.subtract;
+KF.prototype = {
+  'x': null,
+  'P': null,
+  //
+  'A': null,
+  'B': null,
+  'C': null,
+  //
+  'u': null,
+  'w': null,
+  'Q': null,
+  //
+  'update': function(ob) {
 
-  /**
-   * @constructor
-   * @returns {KF}
-   */
-  function KF(X0, P0, A, C, Q) {
+    // x_k: Predicted State vector / Estimated signal
+    // X_k: State vector
+    var x = this['x']; // Get prev state
 
-    this['X'] = X0;
-    this['P'] = P0;
-    this['A'] = A;
-    this['C'] = C;
-    this['Q'] = Q;
-  }
+    // p_k: Predicted Covariance Matrix
+    // P_k: Covariance Matrix
+    var P = this['P']; // Get prev cov
 
-  KF.prototype = {
-    'X': null,
-    'P': null,
-    //
-    'A': null,
-    'B': null,
-    'C': null,
-    //
-    'U': null,
-    'W': null,
-    'Q': null,
-    //
-    'update': function(ob) {
+    // A: Format Matrix
+    // B: Format Matrix
+    // C: Format Matrix
+    // H: Control Matrix
+    var A = ob['A'];
+    var B = ob['B'];
+    var C = ob['C'];
+    var H = ob['H'];
 
-      // x_k: Predicted State vector / Estimated signal
-      // X_k: State vector
-      var Xk = this['X']; // Get prev state
+    // U_k: Control Variable Matrix
+    var u = ob['u'];
 
-      // p_k: Predicted Covariance Matrix
-      // P_k: Covariance Matrix
-      var Pk = this['P']; // Get prev cov
+    // W_k: Predicted State noise
+    var w = ob['w'];
 
-      // A: Format Matrix
-      // B: Format Matrix
-      // C: Format Matrix
-      // H: Control Matrix
-      var A = this['A'];
-      var B = this['B'];
-      var C = this['C'];
-      var H = ob['H'];
+    // Q_k: Process-Noise (Keeps state Cov-Matrix from becoming too small)
+    var Qk = ob['Q'];
 
-      // U_k: Control Variable Matrix
-      var Uk = this['U'];
+    // y_k: New Observation
+    // Y_k: Observed value
+    var y = ob['y'];
 
-      // W_k: Predicted State noise
-      var Wk = this['W'];
+    // Z_k: Measure noise, the noise we expect the measurement was generated on
+    var z = ob['z'];
 
-      // Q_k: Process-Noise (Keeps state Cov-Matrix from becoming too small)
-      var Qk = this['Q'];
+    // K: Kalman Gain
+    // R: Sensor Noise Covariance
+    var R = ob['R'];
 
-      // y_k: New Observation
-      // Y_k: Observed value
-      var Yk = ob['Y'];
-
-      // Z_k: Measure noise, the noise we expect the measurement was generated on
-      var Zk = ob['Z'];
-
-      // K: Kalman Gain
-      // R: Sensor Noise Covariance
-      var R = ob['R'];
-
-
-      if (A instanceof Function) {
-        A = A(T);
-      }
-
-
-
-      // Predict State
-      // x_k = A * X_{k-1} + B * U_k + W_k
-      var xk = A.mul(Xk);
-
-      if (B && Uk) {
-        xk = xk.add(B.mul(Uk));
-      }
-
-      if (Wk) {
-        xk = xk.add(Wk);
-      }
-
-      // Predicted process Covariance Matrix
-      // p_k = A * P_{k-1} * A^t + Q_k
-      var pk = A.mul(Pk).mul(A.transpose());
-
-      if (Qk) {
-        pk = pk.add(Qk);
-      }
-
-      // Kalman Gain, weight for measurement and model
-      // K = p_k * H^t * (H * p_k * H^t + R)^-1
-      var K = pk.mul(H.transpose());
-      var T = H.mul(K).add(R);
-
-      K = K.mul(T.inverse()); // TODO: OPTIMIZE!
-
-
-      // New Observation
-      // y_k = C * Y_k + Z_k
-      var yk = C.mul(Yk);
-
-      if (Zk) {
-        yk = yk.add(Zk);
-      }
-
-      // Update state
-      // X_k = x_k + K(y_k - H * x_k)
-      Xk = xk.add(K.mul(yk.sub(H.mul(xk))));
-
-      // Update process Covariance Matrix
-      // P_k = (I - K * H) * p_k   = OR =   p_k - K * H * p_k 
-      Pk = pk.sub(K.mul(H).mul(pk));
-
-      // Set Current state
-      this['X'] = Xk;
-      this['P'] = Pk;
-    },
-    'setProcessNoise': function(noise) {
-      this['Q'] = noise;
-    },
-    'getState': function() {
-      return this['X'];
+    // Predict State
+    // x_k = A * X_{k-1} + B * U_k + W_k
+    var xhat = A.multiply(x).add(B.multiply(u));
+    if (w) {
+      xhat = xhat.add(w);
     }
+
+    // Predicted process Covariance Matrix
+    // P_k = A * P_{k-1} * A^t + Q_k
+    var Phat = A.multiply(P).multiply(A.transpose());
+    if (Qk) {
+      Phat = Phat.add(Qk);
+    }
+
+    // Kalman Gain, weight for measurement and model
+    // K = P_k * H^t * (H * p_k * H^t + R)^-1
+    var K = Phat.multiply(H.transpose());
+    var T = H.multiply(K).add(R);
+
+    K = K.multiply(T.inverse()); // TODO: OPTIMIZE!
+
+
+    // New Observation
+    // y_k = C * Y_k + Z_k
+    var yk = C.multiply(y);
+    if (z) {
+      yk = yk.add(z);
+    }
+
+    // Update state
+    // X_k = x_k + K(y_k - H * x_k)
+    x = xhat.add(K.multiply(yk.subtract(H.multiply(xhat))));
+
+    // Update process Covariance Matrix
+    // P_k = (I - K * H) * p_k   = OR =   p_k - K * H * p_k 
+    P = Phat.subtract(K.multiply(H).multiply(Phat));
+
+    // Set Current state
+    this['x'] = x;
+    this['P'] = P;
+  },
+  'setProcessNoise': function(noise) {
+    this['Q'] = noise;
+  },
+  'getState': function() {
+    return this['X'];
+  }
+};
+
+function EKF() {
+
+}
+
+function UKF() {
+
+}
+
+if (typeof define === "function" && define["amd"]) {
+  define([], function() {
+    return {
+      KF: KF,
+      EKF: EKF,
+      UKF: UKF
+    };
+  });
+} else if (typeof exports === "object") {
+  module["exports"] = {
+    KF: KF,
+    EKF: EKF,
+    UKF: UKF
   };
-
-  function EKF() {
-
-  }
-
-  function UKF() {
-
-  }
-
-  if (typeof define === "function" && define["amd"]) {
-    define([], function() {
-      return {
-        KF: KF,
-        EKF: EKF,
-        UKF: UKF
-      };
-    });
-  } else if (typeof exports === "object") {
-    module["exports"] = {
-      KF: KF,
-      EKF: EKF,
-      UKF: UKF
-    };
-  } else {
-    root["Kalman"] = {
-      KF: KF,
-      EKF: EKF,
-      UKF: UKF
-    };
-  }
+} else {
+  root["Kalman"] = {
+    KF: KF,
+    EKF: EKF,
+    UKF: UKF
+  };
+}
 
 })(this);
