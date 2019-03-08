@@ -1,7 +1,7 @@
 {
     "name": "kalman",
     "title": "Kalman.js",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "https://github.com/infusion/Kalman.js",
     "bugs": "https://github.com/infusion/Kalman.js/issues",
     "description": "A kalman filter library",
