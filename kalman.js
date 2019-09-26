@@ -111,11 +111,8 @@ KF.prototype = {
     this['x'] = x;
     this['P'] = P;
   },
-  'setProcessNoise': function(noise) {
-    this['Q'] = noise;
-  },
   'getState': function() {
-    return this['X'];
+    return this['x'];
   }
 };
 
