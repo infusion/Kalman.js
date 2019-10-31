@@ -23,14 +23,6 @@ KF.prototype = {
   'x': null,
   'P': null,
   //
-  'A': null,
-  'B': null,
-  'C': null,
-  //
-  'u': null,
-  'w': null,
-  'Q': null,
-  //
   'update': function(ob) {
 
     // x_k: Predicted State vector / Estimated signal
@@ -71,11 +63,8 @@ KF.prototype = {
     var R = ob['R'];
 
     // Predict State
-    // x_k = A * X_{k-1} + B * U_k + W_k
+    // x_k = A * X_{k-1} + B * U_k
     var xhat = A.multiply(x).add(B.multiply(u));
-    if (w) {
-      xhat = xhat.add(w);
-    }
 
     // Predicted process Covariance Matrix
     // P_k = A * P_{k-1} * A^t + Q_k
