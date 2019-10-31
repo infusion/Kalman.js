@@ -45,9 +45,6 @@ KF.prototype = {
     // U_k: Control Variable Matrix
     var u = ob['u'];
 
-    // W_k: Predicted State noise
-    var w = ob['w'];
-
     // Q_k: Process-Noise (Keeps state Cov-Matrix from becoming too small)
     var Qk = ob['Q'];
 
