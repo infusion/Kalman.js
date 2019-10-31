@@ -21,7 +21,6 @@ filter.update({
   H, // Observation matrix
   R, // Sensor Noise Coviarance
   Q, // Process Noise Covariance (Optional)
-  w, // System noise (Optional)
   C, // Measurement design matrix
   y, // new measurement vector
 });
