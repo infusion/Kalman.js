@@ -52,9 +52,6 @@ KF.prototype = {
     // Y_k: Observed value
     var y = ob['y'];
 
-    // Z_k: Measure noise, the noise we expect the measurement was generated on
-    var z = ob['z'];
-
     // K: Kalman Gain
     // R: Sensor Noise Covariance
     var R = ob['R'];
@@ -80,10 +77,7 @@ KF.prototype = {
 
     // New Observation
     // y_k = C * Y_k + Z_k
-    var yk = C.multiply(y);
-    if (z) {
-      yk = yk.add(z);
-    }
+    var yk = C.multiply(y); 
 
     // Update state
     // X_k = x_k + K(y_k - H * x_k)
