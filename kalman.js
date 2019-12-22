@@ -33,7 +33,7 @@ KF.prototype = {
     // P_k: Covariance Matrix
     var P = this['P']; // Get prev cov
 
-    // A: Format Matrix
+    // A: Transition matrix that describes how the state transforms from a previous state to the current by multiplication
     // B: Format Matrix
     // C: Format Matrix
     // H: Control Matrix
@@ -42,7 +42,7 @@ KF.prototype = {
     var C = ob['C'];
     var H = ob['H'];
 
-    // U_k: Control Variable Matrix
+    // U_k: Control Variable Matrix, like movement command
     var u = ob['u'];
 
     // Q_k: Process-Noise (Keeps state Cov-Matrix from becoming too small)
