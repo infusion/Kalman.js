@@ -10,20 +10,21 @@ Usage
 
 The constructor takes the initial state x and the initial covariance P. For each update cycle you have to provide all necessary vectors and matrices:
 
-```
+```js
 let filter = new Kalman(x0, P0)
 
-// loop
-filter.update({
-  A, // State design matrix
-  B, // Input design matrix
-  u, // Linear input variable 
-  H, // Observation matrix
-  R, // Sensor Noise Coviarance
-  Q, // Process Noise Covariance (Optional)
-  C, // Measurement design matrix
-  y, // new measurement vector
-});
+loop {
+  filter.update({
+    A, // State design matrix
+    B, // Input design matrix
+    u, // Linear input variable 
+    H, // Observation matrix
+    R, // Sensor Noise Coviarance
+    Q, // Process Noise Covariance (Optional)
+    C, // Measurement design matrix
+    y, // new measurement vector
+  });
+}
 ```
 
 Note: Kalman.js is designed to work with the Sylvester Matrix library, but only uses it implicitly. You can use another library as long as it matches the method names of Sylvester.
