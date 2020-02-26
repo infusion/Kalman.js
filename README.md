@@ -34,35 +34,37 @@ Installation
 ===
 Installing Kalman.js is as easy as cloning this repo or use one of the following commands:
 
-```
+```bash
 bower install kalman
 ```
 or
 
-```
+```bash
 npm install kalman
 ```
 
 Using Kalman.js with the browser
 ===
-    <script src="kalman.js"></script>
-    <script>
-        var kf = new Kalman.KF;
-        ...
-    </script>
-
+```html
+<script src="kalman.js"></script>
+<script>
+    var kf = new Kalman.KF;
+    ...
+</script>
+```
 
 Using Kalman.js with require.js
 ===
-    <script src="require.js"></script>
-    <script>
-    requirejs(['kalman.js'],
-    function(Kalman) {
-        var kf = new Kalman.KF;
-        ...
-    });
-    </script>
-
+```html
+<script src="require.js"></script>
+<script>
+requirejs(['kalman.js'],
+function(Kalman) {
+    var kf = new Kalman.KF;
+    ...
+});
+</script>
+```
 Coding Style
 ===
 As every library I publish, Kalman.js is also built to be as small as possible after compressing it with Google Closure Compiler in advanced mode. Thus the coding style orientates a little on maxing-out the compression rate. Please make sure you keep this style if you plan to extend the library.
@@ -71,7 +73,7 @@ Testing
 ===
 If you plan to enhance the library, make sure you add test cases and all the previous tests are passing. You can test the library with
 
-```
+```bash
 npm test
 ```
 
